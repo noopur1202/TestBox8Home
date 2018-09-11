@@ -34,7 +34,7 @@
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundImage" value="$USER_HOME$/Downloads/splash.jpg" />
                                       <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/splash.jpg" />
+                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/baseline-arrow_back-white-18/2x/baseline_arrow_back_white_18dp.png" />
                                       <entry key="foregroundLayerName" value="ic_launcher_foreground" />
                                       <entry key="outputName" value="ic_splash" />
                                     </map>
@@ -49,13 +49,18 @@
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
                                       <entry key="iconShape" value="NONE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/baseline-favorite_border-white-18/2x/baseline_favorite_border_white_18dp.png" />
-                                      <entry key="outputName" value="baseline_favorite_border_white_18dp" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/baseline-arrow_back-white-18/2x/baseline_arrow_back_white_18dp.png" />
+                                      <entry key="outputName" value="baseline_arrow_back_white_18dp" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="LAUNCHER_LEGACY" />
                           </map>
                         </option>
                       </PersistentState>

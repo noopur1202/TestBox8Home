@@ -1,5 +1,7 @@
 package com.workstation.box8home;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,38 +13,50 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>{
 
-    private List<ModelCategoriesMain> countryList;
+    private List<ModelCategoriesMain> categoryList;
+    private Context context;
+
 
     /**
      * View holder class
      * */
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView countryText;
-        public TextView popText;
+        public TextView categoryname;
         public ImageView itemImage;
 
         public MyViewHolder(View view) {
             super(view);
-            countryText = (TextView) view.findViewById(R.id.countryName);
-            popText = (TextView) view.findViewById(R.id.pop);
+            categoryname = (TextView) view.findViewById(R.id.name);
+            itemImage = (ImageView)view.findViewById(R.id.product_image);
+
+            itemImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position  =   getAdapterPosition();
+                    Intent productList = new Intent(context,ProductListActivity.class);
+                    productList.putExtra("category",position);
+                    productList.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(productList);
+                }
+            });
         }
     }
 
-    public HomeAdapter(List<ModelCategoriesMain> countryList) {
-        this.countryList = countryList;
+    public HomeAdapter(List<ModelCategoriesMain> countryList,Context context) {
+        this.categoryList = countryList;
+        this.context = context;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ModelCategoriesMain c = countryList.get(position);
-        holder.countryText.setText(c.name);
-        holder.popText.setText(String.valueOf(c.population));
+        ModelCategoriesMain c = categoryList.get(position);
+        holder.categoryname.setText(c.name);
     }
 
     @Override
     public int getItemCount() {
-        return countryList.size();
+        return categoryList.size();
     }
 
     @Override

@@ -6,6 +6,7 @@
     android:padding="@dimen/dimen_2_dp">
 
     <ImageView
+        android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
@@ -14,18 +15,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="country"
+        android:text="NAME"
         android:textColor="@color/black"
+        android:textSize="@dimen/dimen_30_dp"
         android:layout_alignParentBottom="true"
-        android:id="@+id/countryName"
+        android:id="@+id/name"
         android:textStyle="bold"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:layout_above="@+id/countryName"
-        android:text="population"
-        android:id="@+id/pop"/>
-
 
 </RelativeLayout>

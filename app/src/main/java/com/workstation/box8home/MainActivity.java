@@ -1,10 +1,19 @@
 package com.workstation.box8home;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,21 +23,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private List<ModelCategoriesMain> countryList= new ArrayList<>();
+    public static List<List<HashMap<String, String>>> productListAll = new ArrayList<List<HashMap<String, String>>>();
+    List<ModelCategoriesMain> categoryList = new ArrayList<ModelCategoriesMain>();
+    RecyclerView rv;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RecyclerView rv = (RecyclerView) findViewById(R.id.recycler_view);
+        rv = (RecyclerView) findViewById(R.id.recycler_view);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,14 +59,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        createList();
-
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        rv.setLayoutManager(llm);
-
-        HomeAdapter ca = new HomeAdapter(countryList);
-        rv.setAdapter(ca);
+        new getData().execute();
     }
 
     @Override
@@ -84,21 +93,90 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void createList() {
-        countryList.add(new ModelCategoriesMain("Italy", 59.83));
-        countryList.add(new ModelCategoriesMain("France", 66.03));
-        countryList.add(new ModelCategoriesMain("Germany", 80.62));
-        countryList.add(new ModelCategoriesMain("Spain", 46.77));
-        countryList.add(new ModelCategoriesMain("Portugal", 10.46));
-        countryList.add(new ModelCategoriesMain("Austria", 8.47));
-        countryList.add(new ModelCategoriesMain("Netherlands", 16.8));
-        countryList.add(new ModelCategoriesMain("Belgium", 11.2));
-        countryList.add(new ModelCategoriesMain("Denmark", 5.67));
-        countryList.add(new ModelCategoriesMain("Ireland", 4.63));
-        countryList.add(new ModelCategoriesMain("Norway", 5.19));
-        countryList.add(new ModelCategoriesMain("Sweden", 9.85));
-        countryList.add(new ModelCategoriesMain("Finland", 5.47));
-        countryList.add(new ModelCategoriesMain("Greece", 10.76));
 
+    @SuppressLint("StaticFieldLeak")
+    private class getData extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            HttpHandler sh = new HttpHandler();
+
+            String jsonStr = JsonData.productList;
+
+            Log.e("LOG_TAG", "Response from json: " + jsonStr);
+
+            if (jsonStr != null) {
+                try {
+                    JSONObject jsonObj = new JSONObject(jsonStr);
+                    JSONArray food = jsonObj.getJSONArray("food");
+
+                    // looping through All Contacts
+                    for (int i = 0; i < food.length(); i++) {
+                        JSONObject c = food.getJSONObject(i);
+
+                        String category = c.getString("Category");
+                        categoryList.add(new ModelCategoriesMain(category));
+
+                        // product node is JSON Object
+                        JSONArray products = c.getJSONArray("products");
+                        List<HashMap<String, String>> productList = new ArrayList<HashMap<String, String>>();
+
+                        for (int j = 0; j < products.length(); j++) {
+                        JSONObject p = products.getJSONObject(j);
+                        String name = p.getString("name");
+                        String url = p.getString("url");
+
+                            // tmp hash map for single product
+                            HashMap<String, String> product = new HashMap<>();
+
+                            // adding each child node to HashMap key => value
+                            product.put("name",name);
+                            product.put("url", url);
+
+                            productList.add(product);
+
+                        }productListAll.add(productList);
+                    }
+                    Log.v("LOG_TAG","CATEGORIES : "+categoryList);
+                    Log.v("LOG_TAG","PRODUCTS : "+productListAll);
+
+                } catch (final JSONException e) {
+                    Log.e("LOG_TAG", "Json parsing error: " + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                           "Json parsing error: " + e.getMessage(),
+                                           Toast.LENGTH_LONG)
+                                 .show();
+                        }
+                    });
+                }
+            } else {
+                Log.e("LOG_TAG", "Couldn't get json from server.");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(),
+                                       "Couldn't get json from server. Check LogCat for possible errors!",
+                                       Toast.LENGTH_LONG)
+                             .show();
+                    }
+                });
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+            llm.setOrientation(LinearLayoutManager.VERTICAL);
+            rv.setLayoutManager(llm);
+
+            HomeAdapter ca = new HomeAdapter(categoryList,getApplicationContext());
+            rv.setAdapter(ca);
+        }
     }
 }
