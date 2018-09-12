@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -22,19 +22,20 @@
                     android:id="@+id/product_list_back"
                     android:layout_centerVertical="true"
                     android:clickable="true"
-                    android:src="@mipmap/baseline_arrow_back_white_18dp"/>
+                    android:src="@mipmap/baseline_arrow_back_white_18dp"
+                    tools:ignore="ContentDescription"
+                    android:focusable="true" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/title_home"
-                    android:layout_centerVertical="true"
-                    android:text="@string/app_name"
-                    android:layout_toEndOf="@id/product_list_back"
-                    android:layout_marginStart="@dimen/dimen_20_dp"
-                    android:textSize="@dimen/dimen_20_dp"
+                    android:layout_centerInParent="true"
+                    android:text="@string/menu"
+                    android:textSize="@dimen/dimen_20_sp"
                     android:textColor="@color/white"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    tools:ignore="RelativeOverlap" />
 
                     <ImageView
                         android:layout_width="@dimen/dimen_30_dp"
@@ -43,7 +44,8 @@
                         android:layout_centerVertical="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/dimen_10_dp"
-                        android:src="@mipmap/baseline_favorite_border_white_18dp"/>
+                        android:src="@mipmap/baseline_favorite_border_white_18dp"
+                        tools:ignore="ContentDescription" />
 
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
@@ -52,6 +54,5 @@
             android:id="@+id/recycler_view_products"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/product_list_toolbar"
             android:scrollbars="vertical"/>
 </LinearLayout>

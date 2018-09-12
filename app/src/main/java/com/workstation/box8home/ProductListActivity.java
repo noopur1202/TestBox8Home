@@ -47,7 +47,7 @@ public class ProductListActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         rvp.setLayoutManager(llm);
 
-        ProductsAdapter productsAdapter = new ProductsAdapter(productList);
+        ProductsAdapter productsAdapter = new ProductsAdapter(productList,getApplicationContext());
         rvp.setAdapter(productsAdapter);
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -56,5 +56,9 @@ public class ProductListActivity extends AppCompatActivity {
                 getApplicationContext().startActivity(new Intent(ProductListActivity.this,MainActivity.class));
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

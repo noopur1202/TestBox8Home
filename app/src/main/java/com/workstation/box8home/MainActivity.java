@@ -1,5 +1,9 @@
 package com.workstation.box8home;
 
+import com.squareup.picasso.Picasso;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ImageListener;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -37,14 +42,27 @@ public class MainActivity extends AppCompatActivity
     private List<ModelCategoriesMain> countryList= new ArrayList<>();
     public static List<List<HashMap<String, String>>> productListAll = new ArrayList<List<HashMap<String, String>>>();
     List<ModelCategoriesMain> categoryList = new ArrayList<ModelCategoriesMain>();
+
+    List<String> categoryImageUrl = new ArrayList<String>();
     RecyclerView rv;
 
-
+    CarouselView carouselView;
+    int[] sampleImages = {R.drawable.ic_menu_camera, R.drawable.ic_menu_gallery, R.drawable.splash, R.drawable.ic_launcher_background, R.drawable.ic_menu_share};
+    String[] sampleImageUrl = {"https://assets.box8.co.in/picture_resolutions/photos/000/003/147/original/8-pass-web-banner_%281%29.jpg?1536761084",
+                               "https://assets.box8.co.in/picture_resolutions/photos/000/003/175/original/2---Web-banner.jpg?1536735023",
+                               "https://assets.box8.co.in/picture_resolutions/photos/000/003/001/original/1425X500_%281%29.jpg?1535798105",
+                               "https://assets.box8.co.in/picture_resolutions/photos/000/002/968/original/Biryani-web.jpg?1536556215",
+                               "https://assets.box8.co.in/picture_resolutions/photos/000/001/650/original/1425x500.jpg?1535778213"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rv = (RecyclerView) findViewById(R.id.recycler_view);
+
+        carouselView = (CarouselView) findViewById(R.id.carouselView);
+        carouselView.setPageCount(sampleImages.length);
+
+        carouselView.setImageListener(imageListener);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,14 +80,29 @@ public class MainActivity extends AppCompatActivity
         new getData().execute();
     }
 
+    ImageListener imageListener = new ImageListener() {
+        @Override
+        public void setImageForPosition(int position, ImageView imageView) {
+
+            Picasso.with(getApplicationContext())
+                   .load(sampleImageUrl[position])
+                   .fit()
+                   .into(imageView);
+//            imageView.setImageResource(sampleImages[position]);
+
+        }
+    };
+
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -99,7 +132,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void... params) {
-            HttpHandler sh = new HttpHandler();
+//            HttpHandler sh = new HttpHandler();
 
             String jsonStr = JsonData.productList;
 
@@ -110,12 +143,14 @@ public class MainActivity extends AppCompatActivity
                     JSONObject jsonObj = new JSONObject(jsonStr);
                     JSONArray food = jsonObj.getJSONArray("food");
 
-                    // looping through All Contacts
+                    // looping through All data
                     for (int i = 0; i < food.length(); i++) {
                         JSONObject c = food.getJSONObject(i);
 
                         String category = c.getString("Category");
+                        String urlImageCategory = c.getString("imageurl");
                         categoryList.add(new ModelCategoriesMain(category));
+                        categoryImageUrl.add(new String(urlImageCategory));
 
                         // product node is JSON Object
                         JSONArray products = c.getJSONArray("products");
@@ -175,7 +210,7 @@ public class MainActivity extends AppCompatActivity
             llm.setOrientation(LinearLayoutManager.VERTICAL);
             rv.setLayoutManager(llm);
 
-            HomeAdapter ca = new HomeAdapter(categoryList,getApplicationContext());
+            HomeAdapter ca = new HomeAdapter(categoryList,categoryImageUrl,getApplicationContext());
             rv.setAdapter(ca);
         }
     }

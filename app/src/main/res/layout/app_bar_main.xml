@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/title_home"
                 android:text="@string/app_name"
-                android:textSize="@dimen/dimen_20_dp"
+                android:textSize="@dimen/dimen_20_sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
 
@@ -38,7 +38,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/dimen_10_dp"
-                    android:src="@mipmap/baseline_favorite_border_white_18dp"/>
+                    android:src="@mipmap/baseline_favorite_border_white_18dp"
+                    tools:ignore="ContentDescription" />
 
             </RelativeLayout>
         </android.support.v7.widget.Toolbar>

@@ -1,5 +1,7 @@
 package com.workstation.box8home;
 
+import com.squareup.picasso.Picasso;
+
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +16,7 @@ import java.util.List;
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>{
 
     private List<ModelCategoriesMain> categoryList;
+    private List<String> categoryImageList;
     private Context context;
 
 
@@ -43,8 +46,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>{
         }
     }
 
-    public HomeAdapter(List<ModelCategoriesMain> countryList,Context context) {
-        this.categoryList = countryList;
+    public HomeAdapter(List<ModelCategoriesMain> categoryList,List<String> categoryImageList,Context context) {
+        this.categoryList = categoryList;
+        this.categoryImageList = categoryImageList;
         this.context = context;
     }
 
@@ -52,6 +56,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder>{
     public void onBindViewHolder(MyViewHolder holder, int position) {
         ModelCategoriesMain c = categoryList.get(position);
         holder.categoryname.setText(c.name);
+
+        Picasso.with(context)
+               .load(categoryImageList.get(position))
+               .fit()
+               .into(holder.itemImage);
     }
 
     @Override
